@@ -7,6 +7,7 @@ markovcain(Dict) ->
     case io:get_chars('', 65536) of
 	eof ->
 	    print_dict(Dict),
+	    io:format("~p~n", [generate_probability_tables(Dict)]),
 	    init:stop();
 	Text ->    
 	    %% io:put_chars(Text),
@@ -66,7 +67,17 @@ print_dict(Dict)->
 		AccIn
 	end,
     dict:fold(F, [], Dict).
-	    
+
+generate_probability_tables(Dict)->
+    Keys = dict:fetch_keys(Dict),
+    ProbabilityTables = [{Key, calculate_distribution(dict:fetch(Key, Dict))} || Key <- Keys].
+
+
+calculate_distribution(Words)->
+    Sum = lists:foldl(fun(X, Sum) ->  X + Sum end, 0,  [X || {Word, X} <- Words]),
+    Distribution = [{Word, X, X / Sum} || {Word, X} <- Words].
+    
+%next_word(Word, Dict)	    
 
 
 	     
