@@ -70,12 +70,35 @@ print_dict(Dict)->
 
 generate_probability_tables(Dict)->
     Keys = dict:fetch_keys(Dict),
-    ProbabilityTables = [{Key, calculate_distribution(dict:fetch(Key, Dict))} || Key <- Keys].
+    ProbabilityTables = [{Key, calculate_distribution(dict:fetch(Key, Dict))} || Key <- Keys],
+    ProbabilityTables.
+			 
+    
+  
 
 
 calculate_distribution(Words)->
     Sum = lists:foldl(fun(X, Sum) ->  X + Sum end, 0,  [X || {Word, X} <- Words]),
-    Distribution = [{Word, X, X / Sum} || {Word, X} <- Words].
+    Distribution = [{Word, X, trunc((X / Sum) * 100)} || {Word, X} <- Words],
+    add_range(Distribution).
+
+add_range(Distribution)->
+    add_range(Distribution, 0, []).
+add_range([H|T], Sum, Acc)->
+    {Word, Count, Probability} = H,
+    RangeTable = [{word, Word},
+		  {occurrences, Count},
+		  {probability, Probability}, 
+		  {range_floor, Sum + 1},
+		  {range_ceiling, Sum + Probability}],
+    NewAcc = lists:append(Acc, [RangeTable]),
+    add_range(T,  Sum + Probability, NewAcc);
+add_range([], _,Acc) ->
+    Acc.
+    
+    
+    
+    
     
 %next_word(Word, Dict)	    
 
