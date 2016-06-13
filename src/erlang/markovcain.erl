@@ -22,7 +22,7 @@ markovcain(Dict) ->
 %%                     } 
 
 parse(Text, Dict)->
-    Words = string:tokens(Text, " .!,"),
+    Words = string:tokens(Text, " .!,\n:"),
     count(Words, Dict).
 %%    print_dict(Result).
 
@@ -100,7 +100,8 @@ add_range([], _,Acc) ->
     
     
     
-%next_word(Word, Dict)	    
+%next_word(Word, Dict)->	    
+%    lists 
 
 
 	     
